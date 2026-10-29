@@ -1,6 +1,23 @@
+<p align="center">
+  <img src="docs/img/hero.jpg" alt="Rigpop: a hoodie character waving with rig joints on him" width="100%">
+</p>
+
 # Rigpop
 
 Upload a picture, pin joints on it, make it move. Runs entirely in the browser: no build step, no backend, one `index.html`.
+
+<p align="center">
+  <img src="docs/img/rig-wave.gif" alt="Rigged character waving, joints and bones shown" width="360">
+  <br><em>Joints (white dots) and bones (dashed) driving a wave and a little bounce.</em>
+</p>
+
+<table>
+  <tr>
+    <td align="center" width="33%"><img src="docs/img/step-upload.jpg" alt="Upload a picture" width="220"><br><b>1. Upload</b><br>Drop in any 2D drawing.</td>
+    <td align="center" width="33%"><img src="docs/img/step-joints.jpg" alt="Pin joints" width="220"><br><b>2. Pin joints</b><br>Tap to build the skeleton.</td>
+    <td align="center" width="33%"><img src="docs/img/step-animate.jpg" alt="Animate" width="220"><br><b>3. Make it move</b><br>Presets, JSON or AI keyframes.</td>
+  </tr>
+</table>
 
 ## Run
 `npx serve .` (needed for image paths and `?project=`), or just open `index.html` for the demos and uploads. Works on GitHub Pages as is (Settings → Pages → deploy from `main`, root).
