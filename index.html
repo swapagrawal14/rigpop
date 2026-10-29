@@ -5,47 +5,66 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <title>Rigpop – rig and animate any picture</title>
 <style>
-:root{--bg:#e9eef2;--fg:#14202b;--mut:#5d6b78;--card:#fff;--bd:#d3dce4;--ac:#e0245e;--acf:#fff;color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
-@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f151b;--fg:#e8eef3;--mut:#93a1ae;--card:#18212a;--bd:#2a3743;--ac:#ff5c8a;--acf:#14202b;color-scheme:dark}}
-:root[data-theme="dark"]{--bg:#0f151b;--fg:#e8eef3;--mut:#93a1ae;--card:#18212a;--bd:#2a3743;--ac:#ff5c8a;--acf:#14202b;color-scheme:dark}
+:root{--bg:#f4f3ef;--fg:#16161a;--mut:#6b6b74;--card:#fff;--bd:#e4e2dc;--ac:#ff4f2e;--acf:#fff;--ink:#16161a;--inkf:#fff;--soft:#f0eee8;--sh:0 1px 2px rgba(20,20,30,.04),0 8px 24px -12px rgba(20,20,30,.12);color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0e0e11;--fg:#ececf1;--mut:#8d8d98;--card:#17171c;--bd:#2a2a31;--ac:#ff6a4d;--acf:#16161a;--ink:#ececf1;--inkf:#16161a;--soft:#1e1e24;--sh:0 1px 2px rgba(0,0,0,.3),0 10px 30px -14px rgba(0,0,0,.6);color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0e0e11;--fg:#ececf1;--mut:#8d8d98;--card:#17171c;--bd:#2a2a31;--ac:#ff6a4d;--acf:#16161a;--ink:#ececf1;--inkf:#16161a;--soft:#1e1e24;--sh:0 1px 2px rgba(0,0,0,.3),0 10px 30px -14px rgba(0,0,0,.6);color-scheme:dark}
 html{scroll-padding-top:env(safe-area-inset-top,0px)}
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.45 "Trebuchet MS",system-ui,sans-serif}
-main{max-width:640px;margin:0 auto;padding:14px}
-h1{font:700 26px/1.1 "Trebuchet MS",system-ui,sans-serif;letter-spacing:-.02em;margin:6px 0 12px}
-h1 .logo{width:40px;height:40px;border-radius:10px;vertical-align:middle;margin-right:10px}
-h1 small{display:block;font-size:13px;font-weight:400;color:var(--mut);letter-spacing:0;margin-top:4px}
-.stage{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:8px;display:grid;place-items:center;min-height:180px}
-canvas{max-width:100%;height:auto;touch-action:none;display:block}
+body{margin:0;background:var(--bg);color:var(--fg);font:14.5px/1.5 ui-sans-serif,-apple-system,"Segoe UI",Inter,Roboto,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+main{max-width:1180px;margin:0 auto;padding:16px 16px 40px}
+.top{display:flex;align-items:center;gap:12px;margin:2px 0 18px}
+h1{font-size:20px;font-weight:750;letter-spacing:-.03em;margin:0;display:flex;align-items:center;gap:10px;flex:1;min-width:0}
+h1 .logo{width:34px;height:34px;border-radius:9px;box-shadow:var(--sh)}
+h1 small{font-size:13px;font-weight:450;color:var(--mut);letter-spacing:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.gh{font-size:13px;color:var(--mut);text-decoration:none;border:1px solid var(--bd);border-radius:999px;padding:6px 12px;background:var(--card)}
+.gh:hover{color:var(--fg)}
+.layout{display:grid;gap:16px}
+@media(min-width:920px){.layout{grid-template-columns:minmax(0,1fr) 380px;align-items:start}.side{position:sticky;top:16px;max-height:calc(100vh - 32px);overflow:auto;padding-right:2px}}
+.stage{background:var(--card) radial-gradient(circle,var(--bd) 1px,transparent 1.3px) 0 0/18px 18px;border:1px solid var(--bd);border-radius:18px;padding:18px;display:grid;place-items:center;min-height:300px;box-shadow:var(--sh)}
+canvas{max-width:100%;max-height:72vh;height:auto;touch-action:none;display:block;border-radius:10px;box-shadow:0 0 0 1px var(--bd)}
 .row{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0;align-items:center}
-button,.btn,select,input,textarea{font:inherit;color:var(--fg);background:var(--card);border:1px solid var(--bd);border-radius:8px;padding:8px 11px}
-button,.btn{cursor:pointer}
+button,.btn,select,input,textarea{font:inherit;font-size:13.5px;color:var(--fg);background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:8px 12px;transition:background .15s,border-color .15s,transform .05s}
+button,.btn{cursor:pointer;font-weight:550}
+button:hover,.btn:hover{border-color:var(--mut)}
+button:active,.btn:active{transform:translateY(1px)}
 button:focus-visible,.btn:focus-within,select:focus-visible,input:focus-visible,textarea:focus-visible{outline:2px solid var(--ac);outline-offset:2px}
-button.on{background:var(--ac);border-color:var(--ac);color:var(--acf)}
-input[type=range]{flex:1;min-width:120px;padding:0}
-input[type=color]{padding:2px;width:40px;height:36px}
+button.on{background:var(--ink);border-color:var(--ink);color:var(--inkf)}
+#modes{display:inline-flex;gap:2px;padding:3px;background:var(--soft);border:1px solid var(--bd);border-radius:12px;margin:14px 0 6px}
+#modes button{border:0;background:transparent;border-radius:9px;padding:7px 14px}
+#modes button.on{background:var(--card);color:var(--fg);box-shadow:var(--sh)}
+.btn.pri,#play,#gen{background:var(--ac);border-color:var(--ac);color:#fff}
+#play.on{background:var(--ink);border-color:var(--ink);color:var(--inkf)}
+input[type=range]{flex:1;min-width:120px;padding:0;accent-color:var(--ac);border:0;background:none}
+input[type=color]{padding:2px;width:36px;height:34px;vertical-align:middle}
 #prompt,#base,#model,#key{flex:1;min-width:140px}
-textarea{width:100%;font:12px/1.4 ui-monospace,Menlo,monospace}
-details{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:10px 14px;margin:10px 0}
-summary{cursor:pointer;font-weight:700}
+textarea{width:100%;font:12px/1.5 ui-monospace,SFMono-Regular,Menlo,monospace;background:var(--soft)}
+details{background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:12px 16px;margin:0 0 12px;box-shadow:var(--sh)}
+summary{cursor:pointer;font-weight:650;font-size:13px;letter-spacing:.06em;text-transform:uppercase;color:var(--mut);list-style:none;display:flex;justify-content:space-between}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"+";font-size:16px;line-height:1}
+details[open] summary::after{content:"\2013"}
+details[open] summary{margin-bottom:6px}
 #msg{color:var(--mut);font-size:13px;min-height:20px}
-.hint{color:var(--mut);font-size:13px;margin:6px 0}
+.hint{color:var(--mut);font-size:12.5px;margin:6px 0}
 [hidden]{display:none!important}
-.dgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(92px,1fr));gap:8px;margin:4px 0 10px}
-.dgrid button{display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 6px;font-size:13px;line-height:1.2}
-.dgrid button b{font-size:26px;line-height:1}
+.dgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(104px,1fr));gap:8px;margin:4px 0 10px}
+.dgrid button{display:flex;flex-direction:column;align-items:center;gap:6px;padding:12px 6px;font-size:12.5px;line-height:1.2;border-radius:14px}
+.dgrid button:hover{background:var(--soft)}
+.dgrid button b{font-size:24px;line-height:1}
 </style></head><body><main>
-<h1><img class="logo" src="logo.png" alt="">Rigpop<small>Drop in a picture, pin joints on it, make it move.</small></h1>
+<header class="top"><h1><img class="logo" src="logo.png" alt="">Rigpop<small>Drop in a picture, pin joints, make it move.</small></h1><a class="gh" href="https://github.com/swapagrawal14/rigpop" target="_blank" rel="noopener">★ GitHub</a></header>
+<div class="layout"><section class="work">
 <div class="stage"><canvas id="cv" width="360" height="480"></canvas></div>
 <div class="row" id="modes">
  <button data-m="add" class="on">Add joints</button><button data-m="move">Move joints</button><button data-m="pose">Pose</button>
 </div>
 <div class="row">
- <label class="btn">Upload image<input type="file" id="file" accept="image/*" hidden></label>
+ <label class="btn pri">Upload image<input type="file" id="file" accept="image/*" hidden></label>
  <button id="demos" aria-expanded="false" aria-controls="dgrid">🎬 Demos ▾</button><button id="clear">Clear joints</button>
 </div>
 <div id="dgrid" class="dgrid" hidden></div>
 <div id="msg"></div>
+</section><aside class="side">
 <details open><summary>Selected joint</summary>
  <p class="hint">Tap the picture to place joints, root first. Tap a joint to select it; the next joint you add becomes its child. <b>New root</b> deselects, so the next joint starts on its own.</p>
  <div class="row"><input id="jname" aria-label="Joint name"><select id="jpar" aria-label="Parent joint"></select><button id="jdel">Delete joint</button><button id="jnone" title="Deselect, so the next joint you add starts a new root (handy for pinning the background)">New root</button></div>
@@ -68,6 +87,7 @@ summary{cursor:pointer;font-weight:700}
  <div class="row"><button id="save">Save project (with image)</button><button id="saver">Save rig only</button><label class="btn">Open project (.json)<input type="file" id="load" accept=".json,application/json" hidden></label></div>
  <p class="hint">A project file holds the image, joints and animation, so anyone (or any AI agent) can hand you one to preview. The format is in the repo’s docs/PROJECT_FORMAT.md.</p>
 </details>
+</aside></div>
 </main>
 <script>
 const $=s=>document.querySelector(s),cv=$("#cv"),cx=cv.getContext("2d"),R=Math.PI/180;
