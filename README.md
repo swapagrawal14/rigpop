@@ -4,6 +4,10 @@
 
 # Rigpop
 
+<p align="center">
+  <a href="https://www.producthunt.com/products/rigpop?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-rigpop" target="_blank" rel="noopener noreferrer"><img alt="Rigpop - rig and animate any picture | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1297380&amp;theme=light&amp;t=1793289260372"></a>
+</p>
+
 Upload a picture, pin joints on it, make it move. Runs entirely in the browser: no build step, no backend, one `index.html`.
 
 <p align="center">
