@@ -27,6 +27,10 @@ details{background:var(--card);border:1px solid var(--bd);border-radius:14px;pad
 summary{cursor:pointer;font-weight:700}
 #msg{color:var(--mut);font-size:13px;min-height:20px}
 .hint{color:var(--mut);font-size:13px;margin:6px 0}
+[hidden]{display:none!important}
+.dgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(92px,1fr));gap:8px;margin:4px 0 10px}
+.dgrid button{display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 6px;font-size:13px;line-height:1.2}
+.dgrid button b{font-size:26px;line-height:1}
 </style></head><body><main>
 <h1>Rigpop<small>Drop in a picture, pin joints on it, make it move.</small></h1>
 <div class="stage"><canvas id="cv" width="360" height="480"></canvas></div>
@@ -35,8 +39,9 @@ summary{cursor:pointer;font-weight:700}
 </div>
 <div class="row">
  <label class="btn">Upload image<input type="file" id="file" accept="image/*" hidden></label>
- <button id="hk">Hiker demo</button><button id="demo">Stick demo</button><button id="clear">Clear joints</button>
+ <button id="demos" aria-expanded="false" aria-controls="dgrid">🎬 Demos ▾</button><button id="clear">Clear joints</button>
 </div>
+<div id="dgrid" class="dgrid" hidden></div>
 <div id="msg"></div>
 <details open><summary>Selected joint</summary>
  <p class="hint">Tap the picture to place joints, root first. Tap a joint to select it; the next joint you add becomes its child.</p>
@@ -187,7 +192,75 @@ $("#jpar").onchange=e=>{const j=by(sel);if(j){j.parent=e.target.value||null;dirt
 $("#jdel").onclick=()=>{const j=by(sel);if(!j)return;kids(j.name).forEach(k=>k.parent=j.parent);J=J.filter(x=>x!==j);sel=j.parent;dirty=1;ui()};
 $("#jrot").oninput=e=>{const j=by(sel);if(!j)return;playing=false;mode="pose";j.a=+e.target.value;$("#jv").textContent=Math.round(j.a)+"°";ui();$("#jrot").value=j.a};
 $("#clear").onclick=()=>{J=[];sel=null;cnt=0;dirty=1;playing=false;mode="add";ui()};
-$("#demo").onclick=demo;$("#hk").onclick=hiker;
+/* demo library: each demo is drawn in code (transparent background), with its rig and a looping animation */
+const INK="#1b1a2e";
+function mk(w,h,fn){const c=document.createElement("canvas");c.width=w;c.height=h;const g=c.getContext("2d");g.lineCap=g.lineJoin="round";
+ g.L=(p,w,col)=>{g.beginPath();p.forEach((q,i)=>i?g.lineTo(q[0],q[1]):g.moveTo(q[0],q[1]));g.strokeStyle=INK;g.lineWidth=w+8;g.stroke();g.strokeStyle=col;g.lineWidth=w;g.stroke()};
+ g.E=(x,y,rx,ry,col,lw)=>{g.beginPath();g.ellipse(x,y,rx,ry,0,0,7);if(col){g.fillStyle=col;g.fill()}g.lineWidth=lw||6;g.strokeStyle=INK;g.stroke()};
+ g.D=(x,y,r)=>{g.beginPath();g.arc(x,y,r,0,7);g.fillStyle=INK;g.fill()};
+ g.S=(p,lw,col)=>{g.beginPath();p.forEach((q,i)=>i?g.lineTo(q[0],q[1]):g.moveTo(q[0],q[1]));g.strokeStyle=col||INK;g.lineWidth=lw;g.stroke()};
+ fn(g);return c}
+function cyc(d,n,spec){const t={};Object.entries(spec).forEach(([k,f])=>{t[k]=[];for(let i=0;i<=n;i++){const p=2*Math.PI*i/n;t[k].push(Object.assign({t:+(i/n*d).toFixed(3)},f(p,Math.sin(p),Math.cos(p))))}});return{duration:d,tracks:t}}
+const sn=Math.sin;
+const DEMOS=[
+ {id:"hiker",icon:"🥾",name:"Hiker walk",run:()=>hiker()},
+ {id:"stick",icon:"👋",name:"Stick wave",run:()=>demo()},
+ {id:"hoodie",icon:"🐻",name:"Hoodie dance",w:360,h:480,sel:"rsh",
+  joints:[["hip",180,300,""],["spine",180,200,"hip"],["head",180,118,"spine"],["lsh",126,208,"spine"],["lel",100,264,"lsh"],["lha",92,322,"lel"],["rsh",234,208,"spine"],["rel",260,264,"rsh"],["rha",268,322,"rel"],["lhip",160,308,"hip"],["lkn",156,385,"lhip"],["lft",154,452,"lkn"],["rhip",200,308,"hip"],["rkn",204,385,"rhip"],["rft",206,452,"rkn"]],
+  draw:g=>{const R="#d6282d",SK="#fce2ce";
+   g.L([[160,300],[156,385],[154,452]],34,R);g.L([[200,300],[204,385],[206,452]],34,R);
+   g.L([[126,208],[100,264],[92,318]],24,R);g.L([[234,208],[260,264],[268,318]],24,R);
+   g.E(92,326,12,12,SK,5);g.E(268,326,12,12,SK,5);
+   g.L([[180,200],[180,296]],68,R);
+   g.E(146,62,19,19,R);g.E(214,62,19,19,R);g.E(180,118,52,64,R);g.E(180,124,34,46,SK,5);
+   g.D(167,112,3.5);g.D(193,112,3.5);g.S([[181,104],[179,132],[189,132]],3.5);g.S([[172,150],[188,150]],3.5);
+   g.S([[172,188],[168,214]],5,"#fff");g.S([[188,188],[192,214]],5,"#fff")},
+  anim:()=>cyc(1.6,24,{hip:(p,s)=>({dy:-12*Math.abs(s),rot:3*sn(p)}),spine:p=>({rot:6*sn(p)}),head:p=>({rot:-9*sn(p+.4)}),
+   lsh:p=>({rot:50+50*sn(p)}),lel:p=>({rot:30*sn(p*2)}),rsh:p=>({rot:-50+50*sn(p)}),rel:p=>({rot:-30*sn(p*2+.5)}),
+   lhip:p=>({rot:12*sn(p)}),lkn:p=>({rot:-18*Math.max(0,sn(p))}),rhip:p=>({rot:12*sn(p)}),rkn:p=>({rot:18*Math.max(0,-sn(p))})})},
+ {id:"tulip",icon:"🌷",name:"Tulip sway",w:360,h:480,sel:"s3",
+  joints:[["s0",180,462,""],["s1",180,392,"s0"],["s2",180,322,"s1"],["s3",180,252,"s2"],["bloom",180,178,"s3"]],
+  draw:g=>{const G="#3f9a4c";g.L([[180,462],[180,392],[180,322],[180,252],[180,200]],14,G);
+   g.save();g.translate(150,370);g.rotate(-.7);g.E(0,0,16,50,"#5cbf63");g.restore();g.save();g.translate(212,330);g.rotate(.7);g.E(0,0,14,44,"#5cbf63");g.restore();
+   g.beginPath();g.moveTo(140,150);g.quadraticCurveTo(138,222,180,222);g.quadraticCurveTo(222,222,220,150);g.lineTo(200,172);g.lineTo(180,138);g.lineTo(160,172);g.closePath();g.fillStyle="#ff6f9c";g.fill();g.lineWidth=6;g.strokeStyle=INK;g.stroke();
+   g.S([[180,150],[180,205]],4,"#c9466f")},
+  anim:()=>cyc(3,24,{s0:p=>({rot:3*sn(p)}),s1:p=>({rot:5*sn(p-.5)}),s2:p=>({rot:6*sn(p-1)}),s3:p=>({rot:7*sn(p-1.5)}),bloom:p=>({rot:6*sn(p-2)})})},
+ {id:"octo",icon:"🐙",name:"Octopus wiggle",w:360,h:420,sel:"body",
+  joints:(()=>{const j=[["body",180,130,""]];[96,148,212,264].forEach((x,i)=>{const n="t"+(i+1),dx=(x-180)*.35;j.push([n+"a",x,205,"body"],[n+"b",x+dx,285,n+"a"],[n+"c",x+dx*1.6,365,n+"b"])});return j})(),
+  draw:g=>{const P="#8f63d9";[96,148,212,264].forEach(x=>{const dx=(x-180)*.35;g.L([[x,190],[x,205],[x+dx,285],[x+dx*1.6,365],[x+dx*1.7,388]],26,P)});
+   g.E(180,130,92,82,P);g.E(150,128,14,16,"#fff",5);g.E(210,128,14,16,"#fff",5);g.D(153,132,6);g.D(213,132,6);
+   g.S([[166,168],[180,176],[194,168]],5);g.E(126,160,10,6,"#ff9ec1",0.01);g.E(234,160,10,6,"#ff9ec1",0.01)},
+  anim:()=>{const s={body:(p,s)=>({dy:-10*s,rot:3*sn(p)})};[0,1,2,3].forEach(i=>{const n="t"+(i+1),o=i*1.2;s[n+"a"]=p=>({rot:10*sn(p+o)});s[n+"b"]=p=>({rot:20*sn(p+o-.8)});s[n+"c"]=p=>({rot:28*sn(p+o-1.6)})});return cyc(2.4,24,s)}},
+ {id:"fish",icon:"🐟",name:"Fish swim",w:480,h:300,sel:"tail1",
+  joints:[["head",400,150,""],["mid",300,150,"head"],["tail1",205,150,"mid"],["tail2",125,150,"tail1"],["fin",45,150,"tail2"]],
+  draw:g=>{const O="#ff9f1c";g.beginPath();g.moveTo(120,150);g.lineTo(40,92);g.quadraticCurveTo(60,150,40,208);g.closePath();g.fillStyle=O;g.fill();g.lineWidth=6;g.strokeStyle=INK;g.stroke();
+   g.E(270,150,160,72,O);g.beginPath();g.moveTo(240,80);g.quadraticCurveTo(280,40,320,84);g.fillStyle="#ffbf69";g.fill();g.stroke();
+   g.S([[330,90],[315,150],[330,210]],5);g.E(380,135,15,15,"#fff",5);g.D(384,137,7);g.S([[418,168],[428,172]],5);
+   [[230,130],[260,165],[200,170],[290,120]].forEach(([x,y])=>{g.E(x,y,12,9,"#ffd166",4)})},
+  anim:()=>cyc(1.4,24,{head:(p,s)=>({dy:8*s,rot:3*sn(p)}),mid:p=>({rot:5*sn(p-.6)}),tail1:p=>({rot:12*sn(p-1.2)}),tail2:p=>({rot:22*sn(p-1.9)})})},
+ {id:"tooth",icon:"🦷",name:"Tooth wave",w:360,h:480,sel:"rshoulder",
+  joints:[["hip",180,300,""],["spine",180,190,"hip"],["lshoulder",116,212,"spine"],["lelbow",90,266,"lshoulder"],["lhand",84,322,"lelbow"],["rshoulder",244,212,"spine"],["relbow",270,266,"rshoulder"],["rhand",276,322,"relbow"],["lroot",152,312,"hip"],["lfoot",146,415,"lroot"],["rroot",208,312,"hip"],["rfoot",214,415,"rroot"]],
+  draw:g=>{const W="#fffdf6";g.L([[152,300],[146,415]],38,W);g.L([[208,300],[214,415]],38,W);
+   g.L([[116,212],[90,266],[84,318]],18,W);g.L([[244,212],[270,266],[276,318]],18,W);g.E(84,324,13,13,W,5);g.E(276,324,13,13,W,5);
+   g.beginPath();g.moveTo(112,150);g.quadraticCurveTo(112,96,150,98);g.quadraticCurveTo(180,108,210,98);g.quadraticCurveTo(248,96,248,150);g.quadraticCurveTo(250,250,226,320);g.lineTo(134,320);g.quadraticCurveTo(110,250,112,150);g.fillStyle=W;g.fill();g.lineWidth=7;g.strokeStyle=INK;g.stroke();
+   g.D(160,180,6);g.D(200,180,6);g.S([[160,210],[180,224],[200,210]],5);g.E(140,205,11,7,"#ffb3c7",0.01);g.E(220,205,11,7,"#ffb3c7",0.01);
+   g.S([[268,92],[268,118]],4,"#7fd3ff");g.S([[255,105],[281,105]],4,"#7fd3ff")},
+  anim:()=>JSON.parse(WAVE)},
+ {id:"robot",icon:"🤖",name:"Robot dance",w:360,h:480,sel:"rshoulder",joints:DJ.map(j=>({lshoulder:["lshoulder",118,185,"spine"],lelbow:["lelbow",96,255,"lshoulder"],lhand:["lhand",90,325,"lelbow"],rshoulder:["rshoulder",242,185,"spine"],relbow:["relbow",264,255,"rshoulder"],rhand:["rhand",270,325,"relbow"]})[j[0]]||j),
+  draw:g=>{const M="#9aa7b4",B="#5b8def";g.L([[160,300],[156,380],[156,452]],30,M);g.L([[200,300],[204,380],[204,452]],30,M);
+   g.L([[118,185],[96,255],[90,325]],20,M);g.L([[242,185],[264,255],[270,325]],20,M);
+   g.fillStyle=B;g.strokeStyle=INK;g.lineWidth=7;g.fillRect(140,170,80,135);g.strokeRect(140,170,80,135);
+   g.fillStyle="#ffd166";g.fillRect(160,200,40,26);g.strokeRect(160,200,40,26);
+   g.fillStyle=M;g.fillRect(138,62,84,84);g.strokeRect(138,62,84,84);g.S([[180,62],[180,38]],5);g.E(180,34,7,7,"#ff5c8a",4);
+   g.fillStyle="#7fffd4";g.fillRect(152,88,18,14);g.fillRect(190,88,18,14);g.strokeRect(152,88,18,14);g.strokeRect(190,88,18,14);g.S([[160,122],[200,122]],5)},
+  anim:()=>{const st=(v,n)=>Math.round(v*n)/n,d=2,k=[0,.5,1,1.5,2];const tr=(vals)=>vals.map((r,i)=>({t:k[i],rot:r}));
+   return{duration:d,tracks:{lshoulder:tr([0,90,90,0,0]),lelbow:tr([0,-90,0,-90,0]),rshoulder:tr([0,0,-90,-90,0]),relbow:tr([0,0,90,0,0]),head:tr([0,10,-10,10,0]),spine:tr([0,4,-4,4,0]),hip:[{t:0},{t:.25,dy:-10},{t:.5},{t:.75,dy:-10},{t:1},{t:1.25,dy:-10},{t:1.5},{t:1.75,dy:-10},{t:2}]}}}}
+];
+function loadDemo(D){if(D.run)return D.run();setImg(mk(D.w,D.h,D.draw),D.w,D.h);
+ J=D.joints.map(([name,x,y,p])=>({name,x,y,parent:p||null,a:0,dx:0,dy:0}));cnt=0;sel=D.sel||J[0].name;
+ setAnim(D.anim());mode="pose";playing=true;T=0;say(D.name+" loaded. Tap Add joints to edit the rig, or upload your own picture.");ui()}
+const dg=$("#dgrid");DEMOS.forEach(D=>{const b=document.createElement("button");b.type="button";b.innerHTML="<b>"+D.icon+"</b>"+D.name;b.onclick=()=>{loadDemo(D);dg.hidden=true;$("#demos").setAttribute("aria-expanded","false")};dg.appendChild(b)});
+$("#demos").onclick=()=>{dg.hidden=!dg.hidden;$("#demos").setAttribute("aria-expanded",String(!dg.hidden))};
 $("#file").onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{const im=new Image();im.onload=()=>setImg(im,im.naturalWidth,im.naturalHeight);im.onerror=()=>say("Couldn’t read that image.");im.src=r.result};r.readAsDataURL(f)};
 $("#play").onclick=()=>{if(!anim)return say("Pick a preset or paste animation JSON first.");playing=!playing;if(playing)mode="pose";ui()};
 $("#pre").onchange=e=>{if(!J.length){say("Add some joints first.");e.target.value="";return}if(e.target.value){preset(e.target.value);playing=true;mode="pose";T=0;ui()}e.target.value=""};

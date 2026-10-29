@@ -23,7 +23,7 @@ Upload a picture, pin joints on it, make it move. Runs entirely in the browser: 
 `npx serve .` (needed for image paths and `?project=`), or just open `index.html` for the demos and uploads. Works on GitHub Pages as is (Settings → Pages → deploy from `main`, root).
 
 ## How to use
-1. **Upload image** (or try **Hiker demo** / **Stick demo**). The hiker demo is a marker drawing cut out from its background, with a walk cycle generated in code (`walk()` in `index.html`).
+1. **Upload image**, or tap **🎬 Demos** to start from a ready-made rig: 🥾 Hiker walk, 👋 Stick wave, 🐻 Hoodie dance, 🌷 Tulip sway, 🐙 Octopus wiggle, 🐟 Fish swim, 🦷 Tooth wave and 🤖 Robot dance. The hiker is a marker drawing cut out from its background; the others are drawn in code. All demos live in the `DEMOS` list in `index.html`, so adding one is a single entry (drawing, joints, animation).
 2. **Add joints**: tap to place the root first. Tap a joint to select it; the next joint becomes its child. Add a spine or body joint so the torso doesn’t follow the arms.
 3. **Move joints** to adjust. **Pose** lets you drag the rotation slider per joint.
 4. **Animate**: pick a preset, paste keyframe JSON, or **Generate with AI**.
