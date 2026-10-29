@@ -5,61 +5,84 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <title>Rigpop – rig and animate any picture</title>
 <style>
-:root{--bg:#f4f3ef;--fg:#16161a;--mut:#6b6b74;--card:#fff;--bd:#e4e2dc;--ac:#ff4f2e;--acf:#fff;--ink:#16161a;--inkf:#fff;--soft:#f0eee8;--sh:0 1px 2px rgba(20,20,30,.04),0 8px 24px -12px rgba(20,20,30,.12);color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
-@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0e0e11;--fg:#ececf1;--mut:#8d8d98;--card:#17171c;--bd:#2a2a31;--ac:#ff6a4d;--acf:#16161a;--ink:#ececf1;--inkf:#16161a;--soft:#1e1e24;--sh:0 1px 2px rgba(0,0,0,.3),0 10px 30px -14px rgba(0,0,0,.6);color-scheme:dark}}
-:root[data-theme="dark"]{--bg:#0e0e11;--fg:#ececf1;--mut:#8d8d98;--card:#17171c;--bd:#2a2a31;--ac:#ff6a4d;--acf:#16161a;--ink:#ececf1;--inkf:#16161a;--soft:#1e1e24;--sh:0 1px 2px rgba(0,0,0,.3),0 10px 30px -14px rgba(0,0,0,.6);color-scheme:dark}
+@import url("https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Inter:wght@400;500;600;700&display=swap");
+:root{--bg:#fff7ec;--fg:#121212;--mut:#55525a;--card:#fff;--bd:#121212;--ac:#ff4f2e;--acf:#fff;--y:#ffd23f;--b:#7b6cff;--g:#3ddc97;--p:#ff8fc7;--c:#5ad1ff;--sh:4px 4px 0 #121212;--sh2:2px 2px 0 #121212;color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
 html{scroll-padding-top:env(safe-area-inset-top,0px)}
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--fg);font:14.5px/1.5 ui-sans-serif,-apple-system,"Segoe UI",Inter,Roboto,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
-main{max-width:1180px;margin:0 auto;padding:16px 16px 40px}
-.top{display:flex;align-items:center;gap:12px;margin:2px 0 18px}
-h1{font-size:20px;font-weight:750;letter-spacing:-.03em;margin:0;display:flex;align-items:center;gap:10px;flex:1;min-width:0}
-h1 .logo{width:34px;height:34px;border-radius:9px;box-shadow:var(--sh)}
-h1 small{font-size:13px;font-weight:450;color:var(--mut);letter-spacing:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.gh{font-size:13px;color:var(--mut);text-decoration:none;border:1px solid var(--bd);border-radius:999px;padding:6px 12px;background:var(--card)}
-.gh:hover{color:var(--fg)}
-.layout{display:grid;gap:16px}
-@media(min-width:920px){.layout{grid-template-columns:minmax(0,1fr) 380px;align-items:start}.side{position:sticky;top:16px;max-height:calc(100vh - 32px);overflow:auto;padding-right:2px}}
-.stage{background:var(--card) radial-gradient(circle,var(--bd) 1px,transparent 1.3px) 0 0/18px 18px;border:1px solid var(--bd);border-radius:18px;padding:18px;display:grid;place-items:center;min-height:300px;box-shadow:var(--sh)}
-canvas{max-width:100%;max-height:72vh;height:auto;touch-action:none;display:block;border-radius:10px;box-shadow:0 0 0 1px var(--bd)}
+body{margin:0;color:var(--fg);font:14.5px/1.5 Inter,ui-sans-serif,system-ui,sans-serif;-webkit-font-smoothing:antialiased;min-height:100vh;
+ background:radial-gradient(60vw 50vw at 0% 0%,#ffd9c7 0,transparent 60%),radial-gradient(55vw 45vw at 100% 10%,#e3ddff 0,transparent 60%),radial-gradient(60vw 50vw at 50% 100%,#d8f7e9 0,transparent 60%),var(--bg);background-attachment:fixed}
+main{max-width:1200px;margin:0 auto;padding:18px 16px 48px}
+.top{display:flex;align-items:center;gap:12px;margin:0 0 6px}
+h1{font:800 30px/1 "Bricolage Grotesque",Inter,sans-serif;letter-spacing:-.04em;margin:0;display:flex;align-items:center;gap:12px;flex:1;min-width:0}
+h1 .logo{width:44px;height:44px;border-radius:12px;border:2px solid var(--bd);box-shadow:var(--sh2);transform:rotate(-6deg);transition:transform .3s}
+h1:hover .logo{transform:rotate(6deg) scale(1.05)}
+h1 small{display:none}
+.gh{font:700 13px Inter,sans-serif;color:var(--fg);text-decoration:none;border:2px solid var(--bd);border-radius:999px;padding:7px 14px;background:var(--y);box-shadow:var(--sh2);white-space:nowrap}
+.gh:hover{transform:translate(-1px,-1px);box-shadow:var(--sh)}
+.tag{font:700 clamp(28px,6.5vw,56px)/1 "Bricolage Grotesque",sans-serif;letter-spacing:-.045em;margin:18px 0 6px}
+.tag em{font-style:normal;background:var(--ac);color:#fff;padding:0 .18em;border-radius:.18em;display:inline-block;transform:rotate(-2deg)}
+.tag u{text-decoration:none;background:linear-gradient(transparent 62%,var(--y) 62%)}
+.steps{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0 18px}
+.steps span{font:600 12.5px Inter,sans-serif;border:2px solid var(--bd);border-radius:999px;padding:5px 12px;background:var(--card)}
+.steps span:nth-child(1){background:var(--c)}.steps span:nth-child(2){background:var(--p)}.steps span:nth-child(3){background:var(--g)}
+.layout{display:grid;gap:18px}
+@media(min-width:920px){.layout{grid-template-columns:minmax(0,1fr) 390px;align-items:start}.side{position:sticky;top:16px;max-height:calc(100vh - 32px);overflow:auto;padding:2px 8px 8px 2px}}
+.stage{position:relative;background:#fff radial-gradient(circle,#d9d4ca 1.2px,transparent 1.5px) 0 0/20px 20px;border:2.5px solid var(--bd);border-radius:22px;padding:22px;display:grid;place-items:center;min-height:320px;box-shadow:6px 6px 0 var(--bd)}
+.stage::before{content:"LIVE CANVAS";position:absolute;top:-12px;left:18px;font:800 11px Inter,sans-serif;letter-spacing:.12em;background:var(--y);border:2px solid var(--bd);border-radius:999px;padding:3px 10px}
+canvas{max-width:100%;max-height:70vh;height:auto;touch-action:none;display:block;border-radius:12px;background:#fff;border:2px solid var(--bd)}
 .row{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0;align-items:center}
-button,.btn,select,input,textarea{font:inherit;font-size:13.5px;color:var(--fg);background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:8px 12px;transition:background .15s,border-color .15s,transform .05s}
-button,.btn{cursor:pointer;font-weight:550}
-button:hover,.btn:hover{border-color:var(--mut)}
-button:active,.btn:active{transform:translateY(1px)}
-button:focus-visible,.btn:focus-within,select:focus-visible,input:focus-visible,textarea:focus-visible{outline:2px solid var(--ac);outline-offset:2px}
-button.on{background:var(--ink);border-color:var(--ink);color:var(--inkf)}
-#modes{display:inline-flex;gap:2px;padding:3px;background:var(--soft);border:1px solid var(--bd);border-radius:12px;margin:14px 0 6px}
-#modes button{border:0;background:transparent;border-radius:9px;padding:7px 14px}
-#modes button.on{background:var(--card);color:var(--fg);box-shadow:var(--sh)}
-.btn.pri,#play,#gen{background:var(--ac);border-color:var(--ac);color:#fff}
-#play.on{background:var(--ink);border-color:var(--ink);color:var(--inkf)}
-input[type=range]{flex:1;min-width:120px;padding:0;accent-color:var(--ac);border:0;background:none}
-input[type=color]{padding:2px;width:36px;height:34px;vertical-align:middle}
+button,.btn,select,input,textarea{font:600 13.5px Inter,sans-serif;color:var(--fg);background:var(--card);border:2px solid var(--bd);border-radius:12px;padding:8px 13px;transition:transform .08s,box-shadow .08s,background .15s}
+input,textarea,select{font-weight:500}
+button,.btn{cursor:pointer;box-shadow:var(--sh2)}
+button:hover,.btn:hover{transform:translate(-1px,-1px);box-shadow:3px 3px 0 var(--bd)}
+button:active,.btn:active{transform:translate(2px,2px);box-shadow:0 0 0 var(--bd)}
+button:focus-visible,.btn:focus-within,select:focus-visible,input:focus-visible,textarea:focus-visible{outline:3px solid var(--b);outline-offset:2px}
+button.on{background:var(--fg);color:#fff}
+.tools{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:20px 0 6px}
+#modes{display:inline-flex;gap:4px;padding:4px;background:var(--card);border:2.5px solid var(--bd);border-radius:16px;box-shadow:var(--sh2);margin:0}
+#modes button{border:0;box-shadow:none;background:transparent;border-radius:11px;padding:8px 14px}
+#modes button:hover{background:#f3efe6;transform:none}
+#modes button.on{background:var(--b);color:#fff}
+.btn.pri{background:var(--ac);color:#fff}
+#demos{background:var(--y)}
+#play{background:var(--g)}#play.on{background:var(--fg);color:#fff}
+#gen{background:var(--b);color:#fff}
+#rec{background:var(--p)}
+#apply,#save{background:var(--c)}
+#clear,#jdel{background:#fff}
+input[type=range]{flex:1;min-width:120px;padding:0;accent-color:var(--ac);border:0;background:none;box-shadow:none}
+input[type=color]{padding:2px;width:38px;height:36px;vertical-align:middle}
 #prompt,#base,#model,#key{flex:1;min-width:140px}
-textarea{width:100%;font:12px/1.5 ui-monospace,SFMono-Regular,Menlo,monospace;background:var(--soft)}
-details{background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:12px 16px;margin:0 0 12px;box-shadow:var(--sh)}
-summary{cursor:pointer;font-weight:650;font-size:13px;letter-spacing:.06em;text-transform:uppercase;color:var(--mut);list-style:none;display:flex;justify-content:space-between}
+textarea{width:100%;font:12px/1.5 ui-monospace,SFMono-Regular,Menlo,monospace;background:#1b1a20;color:#e9ffe4;border-radius:14px}
+details{background:var(--card);border:2.5px solid var(--bd);border-radius:20px;padding:14px 16px;margin:0 0 16px;box-shadow:var(--sh)}
+details:nth-of-type(1){--chip:var(--c)}details:nth-of-type(2){--chip:var(--g)}details:nth-of-type(3){--chip:var(--p)}details:nth-of-type(4){--chip:var(--y)}
+summary{cursor:pointer;font:800 17px "Bricolage Grotesque",sans-serif;letter-spacing:-.02em;list-style:none;display:flex;align-items:center;gap:10px}
+summary::before{content:"";width:14px;height:14px;border-radius:50%;background:var(--chip,var(--y));border:2px solid var(--bd);flex:none}
 summary::-webkit-details-marker{display:none}
-summary::after{content:"+";font-size:16px;line-height:1}
-details[open] summary::after{content:"\2013"}
-details[open] summary{margin-bottom:6px}
-#msg{color:var(--mut);font-size:13px;min-height:20px}
+summary::after{content:"+";margin-left:auto;font:700 20px Inter;line-height:1;transition:transform .2s}
+details[open] summary::after{transform:rotate(45deg)}
+details[open] summary{margin-bottom:8px}
+label{font-weight:600;font-size:13px}
+#msg{font:600 13px Inter,sans-serif;min-height:20px;color:var(--mut)}
 .hint{color:var(--mut);font-size:12.5px;margin:6px 0}
 [hidden]{display:none!important}
-.dgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(104px,1fr));gap:8px;margin:4px 0 10px}
-.dgrid button{display:flex;flex-direction:column;align-items:center;gap:6px;padding:12px 6px;font-size:12.5px;line-height:1.2;border-radius:14px}
-.dgrid button:hover{background:var(--soft)}
-.dgrid button b{font-size:24px;line-height:1}
+.dgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(108px,1fr));gap:10px;margin:12px 0}
+.dgrid button{display:flex;flex-direction:column;align-items:center;gap:6px;padding:14px 6px;font-size:12.5px;line-height:1.2;border-radius:16px}
+.dgrid button:nth-child(5n+1){background:#fff1c2}.dgrid button:nth-child(5n+2){background:#ffe0ef}.dgrid button:nth-child(5n+3){background:#dcf9ec}.dgrid button:nth-child(5n+4){background:#e4e0ff}.dgrid button:nth-child(5n+5){background:#d9f3ff}
+.dgrid button b{font-size:28px;line-height:1}
+.foot{margin-top:28px;text-align:center;font:600 12.5px Inter,sans-serif;color:var(--mut)}
+@media(max-width:560px){h1{font-size:26px}.stage{padding:14px}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
 </style></head><body><main>
-<header class="top"><h1><img class="logo" src="logo.png" alt="">Rigpop<small>Drop in a picture, pin joints, make it move.</small></h1><a class="gh" href="https://github.com/swapagrawal14/rigpop" target="_blank" rel="noopener">★ GitHub</a></header>
+<header class="top"><h1><img class="logo" src="logo.png" alt="">Rigpop<small>Drop in a picture, pin joints, make it move.</small></h1><a class="gh" href="https://github.com/swapagrawal14/rigpop" target="_blank" rel="noopener">★ Star on GitHub</a></header>
+<p class="tag">Make <em>any picture</em> <u>move.</u></p>
+<div class="steps"><span>① Upload a picture</span><span>② Tap joints</span><span>③ Hit play</span></div>
 <div class="layout"><section class="work">
 <div class="stage"><canvas id="cv" width="360" height="480"></canvas></div>
-<div class="row" id="modes">
+<div class="tools"><div id="modes">
  <button data-m="add" class="on">Add joints</button><button data-m="move">Move joints</button><button data-m="pose">Pose</button>
 </div>
-<div class="row">
- <label class="btn pri">Upload image<input type="file" id="file" accept="image/*" hidden></label>
+ <label class="btn pri">⬆ Upload image<input type="file" id="file" accept="image/*" hidden></label>
  <button id="demos" aria-expanded="false" aria-controls="dgrid">🎬 Demos ▾</button><button id="clear">Clear joints</button>
 </div>
 <div id="dgrid" class="dgrid" hidden></div>
