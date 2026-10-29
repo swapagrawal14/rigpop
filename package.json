@@ -1,0 +1,7 @@
+{
+  "name": "rigpop",
+  "version": "0.1.0",
+  "description": "Rig and animate any 2D image in the browser, with bring-your-own-key AI keyframes",
+  "scripts": {"start": "npx serve ."},
+  "license": "MIT"
+}
