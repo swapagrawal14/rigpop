@@ -1,6 +1,8 @@
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="icon" type="image/png" href="favicon.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
 <title>Rigpop – rig and animate any picture</title>
 <style>
 :root{--bg:#e9eef2;--fg:#14202b;--mut:#5d6b78;--card:#fff;--bd:#d3dce4;--ac:#e0245e;--acf:#fff;color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
@@ -11,6 +13,7 @@ html{scroll-padding-top:env(safe-area-inset-top,0px)}
 body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.45 "Trebuchet MS",system-ui,sans-serif}
 main{max-width:640px;margin:0 auto;padding:14px}
 h1{font:700 26px/1.1 "Trebuchet MS",system-ui,sans-serif;letter-spacing:-.02em;margin:6px 0 12px}
+h1 .logo{width:40px;height:40px;border-radius:10px;vertical-align:middle;margin-right:10px}
 h1 small{display:block;font-size:13px;font-weight:400;color:var(--mut);letter-spacing:0;margin-top:4px}
 .stage{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:8px;display:grid;place-items:center;min-height:180px}
 canvas{max-width:100%;height:auto;touch-action:none;display:block}
@@ -32,7 +35,7 @@ summary{cursor:pointer;font-weight:700}
 .dgrid button{display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 6px;font-size:13px;line-height:1.2}
 .dgrid button b{font-size:26px;line-height:1}
 </style></head><body><main>
-<h1>Rigpop<small>Drop in a picture, pin joints on it, make it move.</small></h1>
+<h1><img class="logo" src="logo.png" alt="">Rigpop<small>Drop in a picture, pin joints on it, make it move.</small></h1>
 <div class="stage"><canvas id="cv" width="360" height="480"></canvas></div>
 <div class="row" id="modes">
  <button data-m="add" class="on">Add joints</button><button data-m="move">Move joints</button><button data-m="pose">Pose</button>
