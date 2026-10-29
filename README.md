@@ -23,11 +23,28 @@ Upload a picture, pin joints on it, make it move. Runs entirely in the browser: 
 `npx serve .` (needed for image paths and `?project=`), or just open `index.html` for the demos and uploads. Works on GitHub Pages as is (Settings → Pages → deploy from `main`, root).
 
 ## How to use
-1. **Upload image**, or tap **🎬 Demos** to start from a ready-made rig: 🥾 Hiker walk, 👋 Stick wave, 🐻 Hoodie dance, 🌷 Tulip sway, 🐙 Octopus wiggle, 🐟 Fish swim, 🦷 Tooth wave and 🤖 Robot dance. The hiker is a marker drawing cut out from its background; the others are drawn in code. All demos live in the `DEMOS` list in `index.html`, so adding one is a single entry (drawing, joints, animation).
+1. **Upload image**, or tap **🎬 Demos** to start from a ready-made rig: 🥾 Hiker walk, 👋 Stick wave, 🐻 Hoodie dance, 🌷 Tulip sway, 🐙 Octopus wiggle, 🐟 Fish swim, 🦷 Tooth wave, 🤖 Robot dance and 🍦 Ice cream, a full picture with its background kept (no cut-out needed). The hiker is a marker drawing cut out from its background; the others are drawn in code. All demos live in the `DEMOS` list in `index.html`, so adding one is a single entry (drawing, joints, animation).
 2. **Add joints**: tap to place the root first. Tap a joint to select it; the next joint becomes its child. Add a spine or body joint so the torso doesn’t follow the arms.
 3. **Move joints** to adjust. **Pose** lets you drag the rotation slider per joint.
 4. **Animate**: pick a preset, paste keyframe JSON, or **Generate with AI**.
 5. **Record WebM** exports one loop.
+
+
+## Rig any picture by hand (2 minutes)
+
+No AI needed. Here's the 🍦 Ice cream demo rigged from scratch:
+
+| | | |
+|:-:|:-:|:-:|
+| <img src="docs/img/guide-1.jpg" width="260"> | <img src="docs/img/guide-2.jpg" width="260"> | <img src="docs/img/guide-3.jpg" width="260"> |
+| <img src="docs/img/guide-4.jpg" width="260"> | <img src="docs/img/guide-5.jpg" width="260"> | <img src="docs/img/guide-6.jpg" width="260"> |
+
+**Tips**
+- Place joints **where the body bends** (hips, knees, elbows), right in the middle of the limb.
+- Order matters: the joint you have selected becomes the **parent** of the next one you tap. Tap a joint first to branch from it.
+- Keeping the background? Tap **New root** and drop lone joints round the edges and on big props (trees, furniture). They hold the scenery still while the character moves.
+- Use **Move joints** to nudge a dot, and the **Rotation** slider in **Pose** mode to test a bend before animating.
+- Big swings stretch pixels: keep rotations small near the torso, larger on hands, tails and hair.
 
 ## AI provider
 Open “AI provider”: any OpenAI-compatible base URL (e.g. `https://api.openai.com/v1`), model, and key. Calls go from the browser straight to `{base}/chat/completions`. The key is kept in localStorage only. If a provider blocks browser calls (CORS), put a tiny proxy in front.

@@ -44,8 +44,8 @@ summary{cursor:pointer;font-weight:700}
 <div id="dgrid" class="dgrid" hidden></div>
 <div id="msg"></div>
 <details open><summary>Selected joint</summary>
- <p class="hint">Tap the picture to place joints, root first. Tap a joint to select it; the next joint you add becomes its child.</p>
- <div class="row"><input id="jname" aria-label="Joint name"><select id="jpar" aria-label="Parent joint"></select><button id="jdel">Delete joint</button></div>
+ <p class="hint">Tap the picture to place joints, root first. Tap a joint to select it; the next joint you add becomes its child. <b>New root</b> deselects, so the next joint starts on its own.</p>
+ <div class="row"><input id="jname" aria-label="Joint name"><select id="jpar" aria-label="Parent joint"></select><button id="jdel">Delete joint</button><button id="jnone" title="Deselect, so the next joint you add starts a new root (handy for pinning the background)">New root</button></div>
  <div class="row"><label for="jrot">Rotation</label><input type="range" id="jrot" min="-180" max="180" value="0"><span id="jv">0°</span></div>
 </details>
 <details open><summary>Animation</summary>
@@ -85,7 +85,7 @@ function build(){const cols=30,rows=Math.max(2,Math.round(cols*ih/iw)),D=[];
  const K=Math.max(iw,ih)/40,V=[];
  for(let r=0;r<=rows;r++)for(let c=0;c<=cols;c++){const u=c/cols*iw,v=r/rows*ih;
   let w=D.map((d,i)=>[i,1/Math.pow(1+dseg(u,v,d.a.x,d.a.y,d.b.x,d.b.y)/K,4)]);const s=w.reduce((a,b)=>a+b[1],0);
-  w=w.map(x=>[x[0],x[1]/s]).filter(x=>x[1]>.01);V.push({u,v,w})}
+  w=w.map(x=>[x[0],x[1]/s]).filter(x=>x[1]>.01);const s2=w.reduce((a,b)=>a+b[1],0)||1;w=w.map(x=>[x[0],x[1]/s2]);V.push({u,v,w})}
  let id=null;try{id=img.getContext("2d").getImageData(0,0,iw,ih).data}catch(e){}const on=[];
  for(let r=0;r<rows;r++)for(let c=0;c<cols;c++){let h=id?0:1;const x0=Math.floor(c/cols*iw),x1=Math.min(iw-1,Math.ceil((c+1)/cols*iw)),y0=Math.floor(r/rows*ih),y1=Math.min(ih-1,Math.ceil((r+1)/rows*ih));
   for(let y=y0;y<=y1&&!h;y+=3)for(let x=x0;x<=x1;x+=3)if(id[(y*iw+x)*4+3]>8){h=1;break}
@@ -191,6 +191,7 @@ $("#jname").onchange=e=>{const j=by(sel);if(!j)return;const n=e.target.value.tri
 $("#jpar").onchange=e=>{const j=by(sel);if(j){j.parent=e.target.value||null;dirty=1}};
 $("#jdel").onclick=()=>{const j=by(sel);if(!j)return;kids(j.name).forEach(k=>k.parent=j.parent);J=J.filter(x=>x!==j);sel=j.parent;dirty=1;ui()};
 $("#jrot").oninput=e=>{const j=by(sel);if(!j)return;playing=false;mode="pose";j.a=+e.target.value;$("#jv").textContent=Math.round(j.a)+"°";ui();$("#jrot").value=j.a};
+$("#jnone").onclick=()=>{sel=null;mode="add";playing=false;say("Next joint you tap starts a new root. Use lone roots round the edges to pin a background in place.");ui()};
 $("#clear").onclick=()=>{J=[];sel=null;cnt=0;dirty=1;playing=false;mode="add";ui()};
 /* demo library: each demo is drawn in code (transparent background), with its rig and a looping animation */
 const INK="#1b1a2e";
@@ -246,6 +247,12 @@ const DEMOS=[
    g.D(160,180,6);g.D(200,180,6);g.S([[160,210],[180,224],[200,210]],5);g.E(140,205,11,7,"#ffb3c7",0.01);g.E(220,205,11,7,"#ffb3c7",0.01);
    g.S([[268,92],[268,118]],4,"#7fd3ff");g.S([[255,105],[281,105]],4,"#7fd3ff")},
   anim:()=>JSON.parse(WAVE)},
+ {id:"icecream",icon:"🍦",name:"Ice cream (with background)",src:"examples/icecream.jpg",w:600,h:800,sel:"lelbow",
+  joints:[["pelvis",300,500,""],["spine",300,330,"pelvis"],["neck",300,275,"spine"],["head",300,190,"neck"],["lsh",245,320,"spine"],["lelbow",185,395,"lsh"],["lhand",140,320,"lelbow"],["cone",145,250,"lhand"],["rsh",358,320,"spine"],["relbow",390,410,"rsh"],["rhand",400,490,"relbow"],["lhip",275,520,"pelvis"],["lknee",268,600,"lhip"],["lfoot",262,700,"lknee"],["rhip",330,520,"pelvis"],["rknee",335,600,"rhip"],["rfoot",345,700,"rknee"],...[[30,30],[300,30],[570,30],[30,260],[570,260],[460,180],[30,520],[570,520],[30,770],[300,780],[570,770],[480,420],[130,560],[470,640]].map(([x,y],i)=>["pin"+(i+1),x,y,""])],
+  anim:()=>{const k=(a)=>a.map(([t,rot])=>({t,rot}));return{duration:3,tracks:{
+   lsh:k([[0,0],[.6,-12],[1.7,-12],[2.3,0],[3,0]]),lelbow:k([[0,0],[.6,32],[.85,26],[1.1,34],[1.35,26],[1.7,32],[2.3,0],[3,0]]),lhand:k([[0,0],[.6,-8],[1.7,-8],[2.3,0],[3,0]]),
+   neck:k([[0,0],[.6,-6],[.85,-8],[1.1,-5],[1.35,-8],[1.7,-6],[2.3,0],[3,0]]),head:k([[0,0],[.7,-3],[1.7,-3],[2.4,2],[3,0]]),
+   spine:k([[0,0],[.6,-2],[1.7,-2],[2.3,1],[3,0]]),rsh:k([[0,0],[1.5,4],[3,0]]),relbow:k([[0,0],[1.6,-5],[3,0]])}}}},
  {id:"robot",icon:"🤖",name:"Robot dance",w:360,h:480,sel:"rshoulder",joints:DJ.map(j=>({lshoulder:["lshoulder",118,185,"spine"],lelbow:["lelbow",96,255,"lshoulder"],lhand:["lhand",90,325,"lelbow"],rshoulder:["rshoulder",242,185,"spine"],relbow:["relbow",264,255,"rshoulder"],rhand:["rhand",270,325,"relbow"]})[j[0]]||j),
   draw:g=>{const M="#9aa7b4",B="#5b8def";g.L([[160,300],[156,380],[156,452]],30,M);g.L([[200,300],[204,380],[204,452]],30,M);
    g.L([[118,185],[96,255],[90,325]],20,M);g.L([[242,185],[264,255],[270,325]],20,M);
@@ -256,7 +263,8 @@ const DEMOS=[
   anim:()=>{const st=(v,n)=>Math.round(v*n)/n,d=2,k=[0,.5,1,1.5,2];const tr=(vals)=>vals.map((r,i)=>({t:k[i],rot:r}));
    return{duration:d,tracks:{lshoulder:tr([0,90,90,0,0]),lelbow:tr([0,-90,0,-90,0]),rshoulder:tr([0,0,-90,-90,0]),relbow:tr([0,0,90,0,0]),head:tr([0,10,-10,10,0]),spine:tr([0,4,-4,4,0]),hip:[{t:0},{t:.25,dy:-10},{t:.5},{t:.75,dy:-10},{t:1},{t:1.25,dy:-10},{t:1.5},{t:1.75,dy:-10},{t:2}]}}}}
 ];
-function loadDemo(D){if(D.run)return D.run();setImg(mk(D.w,D.h,D.draw),D.w,D.h);
+async function loadDemo(D){if(D.run)return D.run();
+ if(D.src){try{const im=await loadI(D.src);setImg(im,D.w,D.h)}catch(e){return say("Couldn’t load that demo image.")}}else setImg(mk(D.w,D.h,D.draw),D.w,D.h);
  J=D.joints.map(([name,x,y,p])=>({name,x,y,parent:p||null,a:0,dx:0,dy:0}));cnt=0;sel=D.sel||J[0].name;
  setAnim(D.anim());mode="pose";playing=true;T=0;say(D.name+" loaded. Tap Add joints to edit the rig, or upload your own picture.");ui()}
 const dg=$("#dgrid");DEMOS.forEach(D=>{const b=document.createElement("button");b.type="button";b.innerHTML="<b>"+D.icon+"</b>"+D.name;b.onclick=()=>{loadDemo(D);dg.hidden=true;$("#demos").setAttribute("aria-expanded","false")};dg.appendChild(b)});
